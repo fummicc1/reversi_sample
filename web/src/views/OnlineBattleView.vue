@@ -1,7 +1,5 @@
 <template>
-  <main>
-    <div class="home-view">This is HomeView</div>
-  </main>
+  <div>Online</div>
 </template>
 
 <script setup lang="ts"></script>

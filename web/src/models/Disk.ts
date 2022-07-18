@@ -1,0 +1,1 @@
+export type Disk = "dark" | "light" | null;
