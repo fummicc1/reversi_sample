@@ -28,7 +28,7 @@
 import { onMounted, ref } from "vue";
 import { addMyColor, createNewGame, decideCpuAction } from "@/models/Game";
 import BoardView from "../components/BoardView.vue";
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 import type { Position } from "@/models/Position";
 import { flipDisk } from "@/models/Board";
 import { calcGameResult } from "@/models/Game";
@@ -38,7 +38,7 @@ const board = computed(() => game.value.board);
 
 const onSelectDisk = (position: Position) => {
   const { x, y } = position;
-  let isOver = [false, false];
+  const isOver = [false, false];
   try {
     game.value = addMyColor(game.value, position);
   } catch (e) {
