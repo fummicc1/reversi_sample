@@ -37,7 +37,6 @@ const game = ref(createNewGame());
 const board = computed(() => game.value.board);
 
 const onSelectDisk = (position: Position) => {
-  const { x, y } = position;
   const isOver = [false, false];
   try {
     game.value = addMyColor(game.value, position);
