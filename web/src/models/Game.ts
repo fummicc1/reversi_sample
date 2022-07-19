@@ -1,12 +1,15 @@
-import { createNewBoard, evaluateBoard, type Board, type BoardResult } from "./Board";
+import { createNewBoard, evaluateBoard, flipDisk, isSameBoard, type Board, type BoardResult } from "./Board";
 import type { Position } from "./Position";
 import { cloneDeep } from 'lodash'
+import type { Disk } from "./Disk";
+
+export type GameState = "win" | "draw" | "lose" | null;
 
 export interface Game {
     board: Board
-    state: "win" | "draw" | "lose" | null
+    state: GameState
     currentTurn: "me" | "opponent"
-    myColor: "dark" | "light"
+    myColor: Disk
     boardResult: BoardResult
 }
 
@@ -28,20 +31,24 @@ export const addMyColor = (game: Game, position: Position): Game => {
     if (disk != null) {
         throw new Error('その位置には駒を置けません');
     }
-    disk = game.myColor;
-    game.board.disks[position.x][position.y] = disk;
+    const temp = cloneDeep(game);
+    disk = temp.myColor;
+    temp.board.disks[position.x][position.y] = disk;
+    const tempNewBoard = flipDisk(cloneDeep(temp.board), position, game.myColor);
+    if (!isSameBoard(tempNewBoard, temp.board)) {
+        game.board.disks = temp.board.disks;
+    } else {
+        throw new Error('その位置には駒を置けません');
+    }
     return game;
 }
 
-export const decideCpuAction = (game: Game): Game => {
+export const decideCpuAction = (game: Game): Position | null => {
     let emptyPosition: Position | null = null;
     let bestScore = 0;
     let ans: Position | null = null;
-    if (game.myColor == "dark") {
-        bestScore = evaluateBoard(game.board).darkCount
-    } else if (game.myColor == "light") {
-        bestScore = evaluateBoard(game.board).lightCount
-    }
+    const opponentColor: Disk = game.myColor == "dark" ? "light" : "dark";
+    bestScore = opponentColor == "dark" ? evaluateBoard(game.board).darkCount : evaluateBoard(game.board).lightCount;
     for (const [x, row] of game.board.disks.entries()) {
         for (const [y, disk] of row.entries()) {
             if (disk === null) {
@@ -51,11 +58,12 @@ export const decideCpuAction = (game: Game): Game => {
                 }
                 let tempBoard = cloneDeep(game.board);
                 tempBoard.disks[x][y] = game.myColor;
+                tempBoard = flipDisk(tempBoard, { x: x, y: y }, opponentColor);
                 const tempResult = evaluateBoard(tempBoard);
                 let tempScore = 0;
-                if (game.myColor == "dark") {
+                if (opponentColor == "dark") {
                     tempScore = tempResult.darkCount;
-                } else if (game.myColor == "light") {
+                } else if (opponentColor == "light") {
                     tempScore = tempResult.lightCount;
                 }
                 if (tempScore >= bestScore) {
@@ -71,10 +79,29 @@ export const decideCpuAction = (game: Game): Game => {
     if (ans == null) {
         ans = emptyPosition!;
     }
-    let opponentColor: "light" | "dark" = "light";
-    if (game.myColor == "light") {
-        opponentColor = "dark";
+    console.log("cpu choice", ans);
+    if (ans != null) {
+        game.board.disks[ans.x][ans.y] = opponentColor;
     }
-    game.board.disks[ans.x][ans.y] = opponentColor;
-    return game;
+    return ans;
+}
+
+export const calcGameResult = (game: Game): GameState => {
+    const result = evaluateBoard(game.board);
+    if (result.darkCount === result.lightCount) {
+        return "draw";
+    }
+    if (game.myColor === "dark") {
+        if (result.darkCount > result.lightCount) {
+            return "win";
+        } else {
+            return "lose"
+        }
+    } else {
+        if (result.darkCount < result.lightCount) {
+            return "win";
+        } else {
+            return "lose"
+        }
+    }
 }
