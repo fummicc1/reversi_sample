@@ -91,8 +91,8 @@ const flipDiskRecursive = (
   }
   if (board.disks[tailPosition.x][tailPosition.y] == interchangeable) {
     if (
-      board.width <= tailPosition.x + xDiff ||
-      board.height <= tailPosition.y + yDiff
+      board.width <= tailPosition.x + xDiff || tailPosition.x + xDiff < 0 ||
+      board.height <= tailPosition.y + yDiff || tailPosition.y + yDiff < 0
     ) {
       return [];
     }

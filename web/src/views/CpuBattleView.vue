@@ -25,10 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { addMyColor, createNewGame, decideCpuAction } from "@/models/Game";
 import BoardView from "../components/BoardView.vue";
-import { computed } from "vue";
 import type { Position } from "@/models/Position";
 import { flipDisk } from "@/models/Board";
 import { calcGameResult } from "@/models/Game";
@@ -62,10 +61,14 @@ const onSelectDisk = (position: Position) => {
       game.value.currentTurn = "me";
     }
 
-    if ((isOver[0] == isOver[1]) == true) {
+    let _isOver = isOver[0] && isOver[1] && true;
+    if (!game.value.board.disks.filter((disk) => disk === null).length) {
+      _isOver = true;
+    }
+    if (_isOver) {
       game.value.state = calcGameResult(game.value);
     }
-  }, 2000);
+  }, 1000);
 };
 </script>
 
