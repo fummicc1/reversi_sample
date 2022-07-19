@@ -42,11 +42,11 @@ export const isSameBoard = (board: Board, other: Board): boolean => {
 export const flipDisk = (
   board: Board,
   position: Position,
-  myColor: Disk
+  color: Disk
 ): Board => {
   const xNeighbors = [-1, 0, 1];
   const yNeighbors = [-1, 0, 1];
-  const opponentColor: Disk = myColor == "light" ? "dark" : "light";
+  const opponentColor: Disk = color == "light" ? "dark" : "light";
   for (const xDiff of xNeighbors) {
     for (const yDiff of yNeighbors) {
       const tempBoard = cloneDeep(board);
@@ -55,11 +55,11 @@ export const flipDisk = (
         position,
         xDiff,
         yDiff,
-        myColor,
+        color,
         opponentColor
       );
       for (const pos of can) {
-        board.disks[pos.x][pos.y] = myColor;
+        board.disks[pos.x][pos.y] = color;
       }
     }
   }
@@ -91,8 +91,10 @@ const flipDiskRecursive = (
   }
   if (board.disks[tailPosition.x][tailPosition.y] == interchangeable) {
     if (
-      board.width <= tailPosition.x + xDiff || tailPosition.x + xDiff < 0 ||
-      board.height <= tailPosition.y + yDiff || tailPosition.y + yDiff < 0
+      board.width <= tailPosition.x + xDiff ||
+      tailPosition.x + xDiff < 0 ||
+      board.height <= tailPosition.y + yDiff ||
+      tailPosition.y + yDiff < 0
     ) {
       return [];
     }
@@ -145,10 +147,29 @@ export const evaluateBoard = (board: Board): BoardResult => {
 export const isFulfilledBoard = (board: Board): boolean => {
   for (const row of board.disks) {
     for (const disk of row) {
-      if (disk !== null) {
+      if (disk === null) {
         return false;
       }
     }
   }
   return true;
-}
+};
+
+export const occupiedBySingleColor = (board: Board): boolean => {
+  let dark = 0;
+  let light = 0;
+  let total = 0;
+  for (const row of board.disks) {
+    for (const disk of row) {
+      if (disk !== null) {
+        total += 1;
+        if (disk === "dark") {
+          dark += 1;
+        } else {
+          light += 1;
+        }
+      }
+    }
+  }
+  return total === dark || total === light;
+};

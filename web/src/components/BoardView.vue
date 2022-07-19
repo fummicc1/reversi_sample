@@ -21,8 +21,8 @@ const onLeaveHoverDisk = () => {
 <template>
   <div class="game-board-view">
     <table>
-      <tr v-for="[x, row] in board.disks.entries()">
-        <td v-for="[y, disk] in row.entries()">
+      <tr v-for="[x, row] in board.disks.entries()" :key="x">
+        <td v-for="[y, disk] in row.entries()" :key="y">
           <div v-if="disk == 'dark'" class="disk">
             <div class="dark"></div>
           </div>

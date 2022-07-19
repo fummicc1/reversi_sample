@@ -2,7 +2,9 @@ import {
   createNewBoard,
   evaluateBoard,
   flipDisk,
+  isFulfilledBoard,
   isSameBoard,
+  occupiedBySingleColor,
   type Board,
   type BoardResult,
 } from "./Board";
@@ -62,13 +64,21 @@ export const decideCpuAction = (game: Game): Position | null => {
   for (const [x, row] of game.board.disks.entries()) {
     for (const [y, disk] of row.entries()) {
       if (disk === null) {
+        let tempBoard = cloneDeep(game.board);
+        tempBoard.disks[x][y] = game.myColor;
+        const flippedTempBoard = flipDisk(
+          cloneDeep(tempBoard),
+          { x: x, y: y },
+          opponentColor
+        );
+        if (isSameBoard(tempBoard, flippedTempBoard)) {
+          continue;
+        }
         emptyPosition = {
           x: x,
           y: y,
         };
-        let tempBoard = cloneDeep(game.board);
-        tempBoard.disks[x][y] = game.myColor;
-        tempBoard = flipDisk(tempBoard, { x: x, y: y }, opponentColor);
+        tempBoard = flippedTempBoard;
         const tempResult = evaluateBoard(tempBoard);
         let tempScore = 0;
         if (opponentColor == "dark") {
@@ -76,7 +86,7 @@ export const decideCpuAction = (game: Game): Position | null => {
         } else if (opponentColor == "light") {
           tempScore = tempResult.lightCount;
         }
-        if (tempScore >= bestScore) {
+        if (tempScore > bestScore) {
           bestScore = tempScore;
           ans = {
             x: x,
@@ -89,7 +99,6 @@ export const decideCpuAction = (game: Game): Position | null => {
   if (ans == null) {
     ans = emptyPosition!;
   }
-  console.log("cpu choice", ans);
   if (ans != null) {
     game.board.disks[ans.x][ans.y] = opponentColor;
   }
@@ -114,4 +123,14 @@ export const calcGameResult = (game: Game): GameState => {
       return "lose";
     }
   }
+};
+
+export const isGameFinished = (game: Game): boolean => {
+  if (isFulfilledBoard(game.board)) {
+    return true;
+  }
+  if (occupiedBySingleColor(game.board)) {
+    return true;
+  }
+  return false;
 };

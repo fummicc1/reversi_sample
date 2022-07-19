@@ -29,13 +29,18 @@ import { computed, ref } from "vue";
 import { addMyColor, createNewGame, decideCpuAction } from "@/models/Game";
 import BoardView from "../components/BoardView.vue";
 import type { Position } from "@/models/Position";
-import { flipDisk, isFulfilledBoard } from "@/models/Board";
-import { calcGameResult } from "@/models/Game";
+import { flipDisk } from "@/models/Board";
+import { calcGameResult, isGameFinished } from "@/models/Game";
 
 const game = ref(createNewGame());
 const board = computed(() => game.value.board);
+const isLoading = ref(false);
 
 const onSelectDisk = (position: Position) => {
+  if (isLoading.value) {
+    return;
+  }
+  isLoading.value = true;
   const isOver = [false, false];
   try {
     game.value = addMyColor(game.value, position);
@@ -43,6 +48,7 @@ const onSelectDisk = (position: Position) => {
     if (confirm(`${e}` + "パスを選択しますか？")) {
       isOver[0] = true;
     } else {
+      isLoading.value = false;
       return;
     }
   }
@@ -58,17 +64,19 @@ const onSelectDisk = (position: Position) => {
         decidePosition,
         game.value.myColor == "light" ? "dark" : "light"
       );
-      game.value.currentTurn = "me";
     }
-
     let _isOver = isOver[0] && isOver[1];
-    if (isFulfilledBoard(game.value.board)) {
+    if (isGameFinished(game.value)) {
       _isOver = true;
     }
+    console.log("isOver", isOver);
+    console.log("_isOver", _isOver);
     if (_isOver) {
-      console.log("game result loading...");
       game.value.state = calcGameResult(game.value);
+    } else {
+      game.value.currentTurn = "me";
     }
+    isLoading.value = false;
   }, 1000);
 };
 </script>
