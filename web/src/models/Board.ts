@@ -8,14 +8,15 @@ export interface Board {
 
 export const createNewBoard = (): Board => {
     return {
-        width: 5,
-        height: 5,
+        width: 6,
+        height: 6,
         disks: [
-            ["light", null, null, null, null],
-            [null, null, null, null, null],
-            [null, null, null, null, null],
-            [null, null, null, null, null],
-            [null, null, null, null, null],
+            [null, null, null, null, null, null],
+            [null, null, null, null, null, null],
+            [null, null, "light", "dark", null, null],
+            [null, null, "dark", "light", null, null],
+            [null, null, null, null, null, null],
+            [null, null, null, null, null, null],
         ]
     };
 };
