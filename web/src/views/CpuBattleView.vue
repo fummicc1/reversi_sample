@@ -21,17 +21,22 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { createNewGame } from "../models/Game";
+import { addMyColor, createNewGame, decideCpuAction } from "../models/Game";
 import BoardView from "../components/BoardView.vue";
 import { computed } from "@vue/reactivity";
+import type { Position } from "@/models/Position";
 
 const game = ref(createNewGame());
 const board = computed(() => game.value.board);
 
 onMounted(() => {});
 
-const onSelectDisk = (x: number, y: number) => {
-  alert(`${x}行${y}列の駒が選択されました`);
+const onSelectDisk = (position: Position) => {
+  const { x, y } = position;
+  game.value = addMyColor(game.value, position);
+  game.value.currentTurn = "opponent";
+  game.value = decideCpuAction(game.value);
+  game.value.currentTurn = "me";
 };
 </script>
 

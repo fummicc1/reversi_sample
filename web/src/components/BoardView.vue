@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { Board } from "@/models/Board";
+import type { Position } from "@/models/Position";
 import { ref } from "vue";
 
 const props = defineProps<{
   initialBoard: Board;
-  onSelectDisk: (x: number, y: number) => void;
+  onSelectDisk: (position: Position) => void;
 }>();
 const board = ref(props.initialBoard);
 
 const hoverDisk = ref<number[] | null>(null);
-const onHoverDisk = (x: number, y: number) => {
-  console.log(x, y);
-  hoverDisk.value = [x, y];
+const onHoverDisk = (position: Position) => {
+  hoverDisk.value = [position.x, position.y];
 };
 const onLeaveHoverDisk = () => {
   hoverDisk.value = null;
@@ -32,8 +32,8 @@ const onLeaveHoverDisk = () => {
           <div
             v-else
             class="disk"
-            @click="props.onSelectDisk(x, y)"
-            @mouseover="onHoverDisk(x, y)"
+            @click="props.onSelectDisk({ x: x, y: y })"
+            @mouseover="onHoverDisk({ x: x, y: y })"
             @mouseleave="onLeaveHoverDisk()"
           >
             <div
