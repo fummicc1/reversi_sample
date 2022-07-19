@@ -141,3 +141,14 @@ export const evaluateBoard = (board: Board): BoardResult => {
     lightCount: lightCount,
   };
 };
+
+export const isFulfilledBoard = (board: Board): boolean => {
+  for (const row of board.disks) {
+    for (const disk of row) {
+      if (disk !== null) {
+        return false;
+      }
+    }
+  }
+  return true;
+}

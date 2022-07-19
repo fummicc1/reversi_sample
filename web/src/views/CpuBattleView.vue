@@ -29,7 +29,7 @@ import { computed, ref } from "vue";
 import { addMyColor, createNewGame, decideCpuAction } from "@/models/Game";
 import BoardView from "../components/BoardView.vue";
 import type { Position } from "@/models/Position";
-import { flipDisk } from "@/models/Board";
+import { flipDisk, isFulfilledBoard } from "@/models/Board";
 import { calcGameResult } from "@/models/Game";
 
 const game = ref(createNewGame());
@@ -61,11 +61,12 @@ const onSelectDisk = (position: Position) => {
       game.value.currentTurn = "me";
     }
 
-    let _isOver = isOver[0] && isOver[1] && true;
-    if (!game.value.board.disks.filter((disk) => disk === null).length) {
+    let _isOver = isOver[0] && isOver[1];
+    if (isFulfilledBoard(game.value.board)) {
       _isOver = true;
     }
     if (_isOver) {
+      console.log("game result loading...");
       game.value.state = calcGameResult(game.value);
     }
   }, 1000);
