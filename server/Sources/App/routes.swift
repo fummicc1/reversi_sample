@@ -1,14 +1,16 @@
+import WebSocketKit
 import Fluent
 import Vapor
 
+
 func routes(_ app: Application) throws {
+    // MARK: HTTP
     app.get { req in
         return "It works!"
     }
 
-    app.get("hello") { req -> String in
-        return "Hello, world!"
+    // MARK: Websocket
+    app.webSocket("hello") { req, ws in
+        print(ws)
     }
-
-    try app.register(collection: TodoController())
 }
