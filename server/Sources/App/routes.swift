@@ -10,7 +10,7 @@ func routes(_ app: Application) throws {
     }
 
     // MARK: Websocket
-    app.webSocket("hello") { req, ws in
-        print(ws)
+    app.webSocket("") { req, ws in
+
     }
 }

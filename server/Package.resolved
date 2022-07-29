@@ -208,15 +208,6 @@
       }
     },
     {
-      "identity" : "swifty-reversi",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/koher/swifty-reversi",
-      "state" : {
-        "revision" : "b8b904ad881bcbbc1d3a9c6e0a697085a0e9dfa6",
-        "version" : "0.2.0-beta"
-      }
-    },
-    {
       "identity" : "vapor",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",

@@ -10,15 +10,18 @@ import SwiftyReversi
 import Vapor
 
 
-public struct Room {
+public struct Room: Content {
     public var id: String
     public var clients: [Client]
-    public var game: Game!
+    public var game: Game
+
+    public init(id: String, clients: [Client], game: Game) {
+        self.id = id
+        self.clients = clients
+        self.game = game
+    }
 
     public static var maxClientCount: Int {
         2
     }
-}
-
-extension Room: AsyncResponseEncodable {    
 }

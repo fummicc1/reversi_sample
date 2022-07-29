@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Vapor
 
-public struct Client {
+public struct Client: Content {
     public var sid: String
     public var roomId: String?
     public var result: Game.Result?

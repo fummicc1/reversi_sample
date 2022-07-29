@@ -1,14 +1,14 @@
 import Foundation
 import Vapor
-import SwiftyReversi
 
 
-public struct Game: AsyncResponseEncodable {
+public struct Game: Codable, Content {
     public var board: Board
 
     public func checkWinner() -> Disk? {
-        let darkCount = board.count(of: .dark)
-        let lightCount = board.count(of: .light)
+        let boardResult = board.result()
+        let darkCount = boardResult.darkCount
+        let lightCount = boardResult.lightCount
         if darkCount > lightCount {
             return .dark
         } else if darkCount < lightCount {
@@ -19,21 +19,9 @@ public struct Game: AsyncResponseEncodable {
 }
 
 extension Game {
-    public enum Result: String, Hashable {
+    public enum Result: String, Hashable, Content {
         case win
         case lose
         case draw
     }
-}
-
-extension Board: AsyncResponseEncodable {
-    public func encodeResponse(for request: Vapor.Request) async throws -> Vapor.Response {
-        <#code#>
-    }
-
-
-}
-
-extension Disk: AsyncResponseEncodable {
-    
 }
