@@ -20,7 +20,7 @@ public struct Board {
         }.flatMap { $0 }
     }
 
-    public struct Result {
+    public struct Status {
         public var darkCount: Int
         public var lightCount: Int
 
@@ -32,8 +32,8 @@ public struct Board {
 }
 
 extension Board {
-    public func result() -> Result {
-        var result = Result(darkCount: 0, lightCount: 0)
+    public func calculateStatus() -> Status {
+        var result = Status(darkCount: 0, lightCount: 0)
         for i in 0..<width {
             for j in 0..<height {
                 let id = j * width + i
